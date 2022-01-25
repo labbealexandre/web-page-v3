@@ -3,7 +3,7 @@
         <v-card tile elevation="0" outlined>
             <v-img
                 height="350"
-                src="https://cdn.vuetifyjs.com/images/cards/cooking.png"
+                :src="require(`../assets/${image}`)"
             >
                 <v-expand-transition>
                     <div
@@ -25,7 +25,7 @@
                             dark
                             size="150"
                         >
-                            mdi-language-python
+                            {{ logo }}
                         </v-icon>
                     </div>
                 </v-expand-transition>
@@ -35,14 +35,13 @@
                 style="position: relative;"
             >
                 <div class="font-weight-light grey--text text-h6 mb-2">
-                    24/01/2022
+                    {{ date }}
                 </div>
                 <h3 class="text-h4 font-weight-light primary--text mb-2">
-                    Side project
+                    {{ title }}
                 </h3>
                 <div class="font-weight-light text-h6 mb-2">
-                    Our Vintage kitchen utensils delight any chef.<br>
-                    Made of bamboo by hand
+                    {{ description }}
                 </div>
             </v-card-text>
         </v-card>
@@ -52,8 +51,21 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 
+const CardProps = Vue.extend({
+  props: {
+    title: String,
+    date: String,
+    description: String,
+    logo: String,
+    image: {
+      default: 'not-found.png',
+      type: String,
+    },
+  },
+});
+
 @Component
-export default class Card extends Vue {
+export default class Card extends CardProps {
     hover = false
 }
 
