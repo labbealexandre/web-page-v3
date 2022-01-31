@@ -12,6 +12,7 @@
                     :description="project.description"
                     :logo="project.logo"
                     :image="project.image"
+                    :url="project.url"
                 />
             </v-col>
         </v-row>
@@ -32,18 +33,31 @@ function getProjects(): Project[] {
       description: 'This is my personnal web site',
       logo: 'mdi-vuejs',
       image: 'web-page.png',
+      url: 'https://github.com/labbealexandre/web-page-v3',
     },
     {
       title: 'ASCII filter',
       date: '04/07/2021',
       description: 'Add an ASCII filter on your camera',
       logo: 'mdi-language-python',
+      image: 'ascii-cam.png',
+      url: 'https://github.com/labbealexandre/ascii_cam',
     },
     {
       title: 'Ray-Tracing',
       date: '13/09/2021',
       description: 'Ray-Tracing engine for simple scenes',
       logo: 'mdi-language-cpp',
+      image: 'ray-tracing.png',
+      url: 'https://github.com/labbealexandre/ray-tracing',
+    },
+    {
+      title: 'Advent of Code',
+      date: '25/12/2021',
+      description: 'Advent of Code made with clojure',
+      logo: 'mdi-language-java',
+      image: 'wip.png',
+      url: 'https://github.com/labbealexandre/advent-of-code',
     },
   ];
 }

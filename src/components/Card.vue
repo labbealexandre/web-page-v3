@@ -37,9 +37,11 @@
                 <div class="font-weight-light grey--text text-h6 mb-2">
                     {{ date }}
                 </div>
-                <h3 class="text-h4 font-weight-light primary--text mb-2">
-                    {{ title }}
-                </h3>
+                <a :href="url" class="text-decoration-none">
+                    <h3 class="text-h4 font-weight-light primary--text mb-2">
+                        {{ title }}
+                    </h3>
+                </a>
                 <div class="font-weight-light text-h6 mb-2">
                     {{ description }}
                 </div>
@@ -59,6 +61,10 @@ const CardProps = Vue.extend({
     logo: String,
     image: {
       default: 'not-found.png',
+      type: String,
+    },
+    url: {
+      default: 'https://github.com/labbealexandre',
       type: String,
     },
   },
