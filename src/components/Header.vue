@@ -2,10 +2,10 @@
     <div id="container">
         <canvas id="background" :width="width" :height="height"></canvas>
         <div id="overlay">
-            <h1 class="secondary--text display-4 mb-6">
+            <h1 class="secondary--text display-4 mb-6 header-title">
                 Alexandre Labbé
             </h1>
-            <h1 class="secondary--text display-2">
+            <h1 class="secondary--text display-2 header-title">
                 IT Security Consultant
             </h1>
         </div>
@@ -54,4 +54,14 @@ export default class Header extends Vue {
     align-items: center;
     flex-direction: column;
 }
+
+@keyframes fadeIn {
+  0% {opacity:0;}
+  100% {opacity:1;}
+}
+
+.header-title {
+    animation: fadeIn linear 2s;
+}
+
 </style>
