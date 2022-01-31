@@ -13,8 +13,8 @@ export default new Vuetify({
     options: { customProperties: true },
     themes: {
       light: {
-        primary: '#6d092f',
-        secondary: '#ffffff',
+        primary: '#0e387a',
+        secondary: '#9fafca',
       },
     },
   },
