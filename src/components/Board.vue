@@ -1,6 +1,11 @@
 <template>
     <v-container>
-        <v-row justify="space-around" class="mt-6">
+        <v-row class="mt-6">
+          <h1 class="primary--text display-2 mb-6 header-title">
+            My side projects
+          </h1>
+        </v-row>
+        <v-row>
             <v-col
                 v-for="project in projects"
                 :key="project.title"
@@ -28,14 +33,6 @@ import type { Project } from '../types';
 function getProjects(): Project[] {
   return [
     {
-      title: 'My Web Site',
-      date: '25/01/2022',
-      description: 'This is my personnal web site',
-      logo: 'mdi-vuejs',
-      image: 'web-page.png',
-      url: 'https://github.com/labbealexandre/web-page-v3',
-    },
-    {
       title: 'ASCII filter',
       date: '04/07/2021',
       description: 'Add an ASCII filter on your camera',
@@ -50,6 +47,14 @@ function getProjects(): Project[] {
       logo: 'mdi-language-cpp',
       image: 'ray-tracing.png',
       url: 'https://github.com/labbealexandre/ray-tracing',
+    },
+    {
+      title: 'My Web Site',
+      date: '25/01/2022',
+      description: 'This is my personnal web site',
+      logo: 'mdi-vuejs',
+      image: 'web-page.png',
+      url: 'https://github.com/labbealexandre/web-page-v3',
     },
     {
       title: 'Advent of Code',
