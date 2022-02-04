@@ -128,9 +128,11 @@ class Point {
 }
 
 class Runner {
-  width: number;
+  width = 0;
 
-  height: number;
+  height = 0;
+
+  canvas: HTMLCanvasElement;
 
   context: CanvasRenderingContext2D;
 
@@ -138,12 +140,16 @@ class Runner {
 
   color: string;
 
-  constructor(color: string) {
-    const canvas = document.getElementById('background') as HTMLCanvasElement;
+  constructor(color: string, canvas: HTMLCanvasElement) {
+    this.canvas = canvas;
     this.context = canvas.getContext('2d') as CanvasRenderingContext2D;
-    [this.width, this.height] = [canvas.width, canvas.height];
     this.color = color;
+  }
 
+  restart(): void {
+    [this.width, this.height] = [this.canvas.width, this.canvas.height];
+
+    this.points = [];
     for (let i = 0; i < PARAMS.nLines; i++) {
       const firstHalf = i < PARAMS.nLines / 2;
 

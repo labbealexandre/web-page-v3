@@ -1,6 +1,6 @@
 <template>
     <div id="container">
-        <canvas id="background" :width="width" :height="height"></canvas>
+        <canvas id="background"></canvas>
         <div id="overlay">
             <h1 class="secondary--text display-4 mb-6 header-title">
                 Alexandre Labbé
@@ -18,16 +18,28 @@ import Runner from '../canvas-runner';
 
 @Component({})
 export default class Header extends Vue {
-    width = window.innerWidth
+    canvas: HTMLCanvasElement = document.getElementById('background') as HTMLCanvasElement
 
-    height = window.innerHeight
+    runner: Runner = new Runner('#ffffff', this.canvas)
 
-    // eslint-disable-next-line class-methods-use-this
     mounted(): void {
-      const runner = new Runner(this.$vuetify.theme.themes.light.secondary?.toString() || '#ffffff');
-      runner.draw();
+      this.canvas = document.getElementById('background') as HTMLCanvasElement;
+      this.runner = new Runner(this.$vuetify.theme.themes.light.secondary?.toString() || '#ffffff', this.canvas);
 
-      window.setInterval(() => { runner.draw(); }, 8);
+      window.addEventListener('resize', this.resizeCanvas, false);
+      this.resizeCanvas();
+
+      window.setInterval(() => { this.runner.draw(); }, 8);
+    }
+
+    resizeCanvas(): void {
+      if (!this.canvas || !this.runner) {
+        return;
+      }
+
+      this.canvas.width = window.innerWidth;
+      this.canvas.height = window.innerHeight;
+      this.runner.restart();
     }
 }
 
