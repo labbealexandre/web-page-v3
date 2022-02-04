@@ -15,6 +15,7 @@ const PARAMS = {
   deltaY: 1 / 16,
   nLines: 8,
   angle: 30,
+  mobileFactor: 2,
 };
 
 enum State {
@@ -37,13 +38,25 @@ function getAngle(index: number): number {
   return (Math.PI * t * PARAMS.angle) / 180;
 }
 
-function getLife(index: number, width: number): number {
+function getLife(index: number, width: number, isMobile: boolean): number {
   const t = ((index % 2) ^ (Math.floor(index / 2) % 2));
 
   const lifeMin = PARAMS.lifeMin + ((PARAMS.lifeMax - PARAMS.lifeMin) / 2) * t;
   const lifeMax = PARAMS.lifeMin + ((PARAMS.lifeMax - PARAMS.lifeMin) / 2) * (1 + t);
 
-  return getRandomInt(width * lifeMin, width * lifeMax);
+  let life = getRandomInt(width * lifeMin, width * lifeMax);
+  if (isMobile) {
+    life *= PARAMS.mobileFactor;
+  }
+  return life;
+}
+
+function getHalfLife(width: number, isMobile: boolean): number {
+  let halfLife = width * PARAMS.halfLife;
+  if (isMobile) {
+    halfLife *= PARAMS.mobileFactor;
+  }
+  return halfLife;
 }
 
 class Point {
@@ -140,10 +153,13 @@ class Runner {
 
   color: string;
 
-  constructor(color: string, canvas: HTMLCanvasElement) {
+  isMobile: boolean;
+
+  constructor(color: string, canvas: HTMLCanvasElement, isMobile: boolean) {
     this.canvas = canvas;
     this.context = canvas.getContext('2d') as CanvasRenderingContext2D;
     this.color = color;
+    this.isMobile = isMobile;
   }
 
   restart(): void {
@@ -158,9 +174,9 @@ class Runner {
       const x = firstHalf ? 0 : this.width;
       const y = (offset + (i % (PARAMS.nLines / 2)) * PARAMS.deltaY * (firstHalf ? 1 : -1)) * this.height;
       const type = getRandomInt(0, 2);
-      const life = getLife(i, this.width);
       const alpha = getAngle(i);
-      const halfLife = this.width * PARAMS.halfLife;
+      const life = getLife(i, this.width, this.isMobile);
+      const halfLife = getHalfLife(this.width, this.isMobile);
 
       this.points.push(new Point(x, y, theta, alpha, this.color, type, life, halfLife));
     }

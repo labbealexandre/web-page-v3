@@ -18,18 +18,26 @@ import Runner from '../canvas-runner';
 
 @Component({})
 export default class Header extends Vue {
-    canvas: HTMLCanvasElement = document.getElementById('background') as HTMLCanvasElement
+    canvas?: HTMLCanvasElement
 
-    runner: Runner = new Runner('#ffffff', this.canvas)
+    runner?: Runner
 
     mounted(): void {
       this.canvas = document.getElementById('background') as HTMLCanvasElement;
-      this.runner = new Runner(this.$vuetify.theme.themes.light.secondary?.toString() || '#ffffff', this.canvas);
+      this.runner = new Runner(
+          this.$vuetify.theme.themes.light.secondary?.toString() || '#ffffff',
+          this.canvas,
+          this.$device.mobile as boolean,
+      );
 
       window.addEventListener('resize', this.resizeCanvas, false);
       this.resizeCanvas();
 
-      window.setInterval(() => { this.runner.draw(); }, 8);
+      window.setInterval(() => {
+        if (this.runner) {
+          this.runner.draw();
+        }
+      }, 8);
     }
 
     resizeCanvas(): void {
