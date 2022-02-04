@@ -1,15 +1,19 @@
 <template>
     <v-container>
         <v-row class="mt-6">
-          <h1 class="primary--text display-2 mb-6 header-title">
-            My side projects
-          </h1>
+          <v-col>
+            <h1 class="primary--text text-md-h2 text-h3 mb-6 header-title">
+              My side projects
+            </h1>
+          </v-col>
         </v-row>
         <v-row>
             <v-col
                 v-for="project in projects"
                 :key="project.title"
-                cols="4"
+                :sm="12"
+                :md="6"
+                :lg="4"
             >
                 <Card
                     :title="project.title"

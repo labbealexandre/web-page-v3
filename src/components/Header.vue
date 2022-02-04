@@ -2,10 +2,10 @@
     <div id="container">
         <canvas id="background"></canvas>
         <div id="overlay">
-            <h1 class="secondary--text display-4 mb-6 header-title">
+            <h1 class="secondary--text text-md-h1 text-h3 mb-6 header-title">
                 Alexandre Labbé
             </h1>
-            <h1 class="secondary--text display-2 header-title">
+            <h1 class="secondary--text text-md-h3 text-h4 header-title">
                 IT Security Consultant
             </h1>
         </div>
