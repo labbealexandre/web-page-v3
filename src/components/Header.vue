@@ -45,9 +45,13 @@ export default class Header extends Vue {
         return;
       }
 
-      this.canvas.width = window.innerWidth;
-      this.canvas.height = window.innerHeight;
-      this.runner.restart();
+      window.setTimeout(() => {
+        if (!this.canvas || !this.runner) return;
+
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+        this.runner.restart();
+      }, 200);
     }
 }
 
@@ -58,11 +62,11 @@ export default class Header extends Vue {
     position: relative;
     height: 100vh;
     width: 100vw;
+    background-color: var(--v-primary-base);
 }
 
 #background {
     position: absolute;
-    background-color: var(--v-primary-base);
 }
 
 #overlay {
