@@ -13,5 +13,6 @@ export type ContactLink = {
     y: number,
     logo: string,
     unset: boolean,
-    url: string
+    url: string,
+    isFile?: boolean
 }

@@ -14,7 +14,7 @@
               class="canvas-icon"
               :style="{'left': `${link.x}px`, 'top': `${link.y}px`}"
             >
-              <a :href="link.url" class="text-decoration-none">
+              <a :href="link.url" class="text-decoration-none" :download="link.isFile && link.url">
                 <v-icon
                   dark
                   size="60"
@@ -55,9 +55,10 @@ function getLinks(): ContactLink[] {
       id: 'reddit',
       x: 0,
       y: 0,
-      logo: 'mdi-reddit',
+      logo: 'mdi-file-account',
       unset: true,
-      url: '',
+      url: 'resume_fr.pdf',
+      isFile: true,
     },
   ];
 }
@@ -90,17 +91,12 @@ export default class Header extends Vue {
     }
 
     setContactLinks(): void {
-      this.contactLinks = (this.runner?.iconsPositions || []).map(([x, y], index) => {
-        const { id, logo, url } = getLinks()[index];
-        return {
-          id,
-          x: Math.round(x),
-          y: Math.round(y),
-          logo,
-          unset: false,
-          url,
-        };
-      });
+      this.contactLinks = (this.runner?.iconsPositions || []).map(([x, y], index) => ({
+        ...getLinks()[index],
+        x: Math.round(x),
+        y: Math.round(y),
+        unset: false,
+      }));
     }
 
     resizeCanvas(): void {
