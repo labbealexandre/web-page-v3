@@ -16,6 +16,13 @@ const PARAMS = {
   nLines: 8,
   angle: 30,
   mobileFactor: 2,
+  cornerCircle: {
+    radius: 1 / 8,
+    width: 10,
+    holesNumber: 6,
+    holeGap: Math.PI / 12,
+    angleStep: Math.PI / 600,
+  },
 };
 
 enum State {
@@ -59,7 +66,24 @@ function getHalfLife(width: number, isMobile: boolean): number {
   return halfLife;
 }
 
-class Point {
+class CanvasObject {
+  state: State;
+
+  constructor() {
+    this.state = State.GROW;
+  }
+
+  move() {
+    throw new Error('Not implemented');
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  draw(ctx: CanvasRenderingContext2D): void {
+    throw new Error('Not implemented');
+  }
+}
+
+class Point extends CanvasObject {
   x: number;
 
   y: number;
@@ -76,13 +100,12 @@ class Point {
 
   alpha: number;
 
-  state: State;
-
   type: number;
 
   hasTurned: boolean;
 
   constructor(x: number, y:number, theta: number, alpha: number, color: string, type: Type, life: number, halfLife: number) {
+    super();
     this.x = x;
     this.y = y;
     this.theta = theta;
@@ -92,7 +115,6 @@ class Point {
     this.life = life;
     this.halfLife = halfLife;
     this.type = type;
-    this.state = State.GROW;
     this.hasTurned = false;
   }
 
@@ -134,9 +156,76 @@ class Point {
     } else {
       ctx.arc(0, 0, this.radius, 0, 2 * Math.PI);
     }
+    ctx.strokeStyle = this.color;
     ctx.fillStyle = this.color;
     ctx.fill();
     ctx.restore();
+  }
+}
+
+class CornerCircle extends CanvasObject {
+  x: number;
+
+  y:number;
+
+  radius: number;
+
+  width: number;
+
+  color: string;
+
+  backgroundColor: string;
+
+  angle: number;
+
+  holesNumber: number;
+
+  holeGap: number
+
+  constructor(x: number, y: number, radius: number, width: number, color: string, backgroundColor: string, holesNumber: number, holeGap: number) {
+    super();
+    this.x = x;
+    this.y = y;
+    this.radius = radius;
+    this.width = width;
+    this.color = color;
+    this.backgroundColor = backgroundColor;
+    this.holesNumber = holesNumber;
+    this.holeGap = holeGap;
+    this.angle = Math.random() * 2 * Math.PI;
+  }
+
+  getStartAngle(index: number): number {
+    return this.angle + (2 * index * Math.PI) / this.holesNumber;
+  }
+
+  draw(ctx: CanvasRenderingContext2D): void {
+    ctx.save();
+    ctx.lineWidth = this.width;
+
+    ctx.beginPath();
+
+    ctx.fillStyle = this.backgroundColor;
+    ctx.strokeStyle = this.backgroundColor;
+    ctx.arc(this.x, this.y, this.radius + this.width, 0, 2 * Math.PI);
+    ctx.fill();
+
+    ctx.strokeStyle = this.color;
+    for (let i = 0; i < this.holesNumber; i++) {
+      const startAngle = this.getStartAngle(i);
+      const endAngle = this.getStartAngle(i + 1) - this.holeGap;
+
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.radius, startAngle, endAngle);
+      ctx.stroke();
+    }
+
+    ctx.restore();
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  move() :void {
+    this.angle = (this.angle + PARAMS.cornerCircle.angleStep) % (2 * Math.PI);
   }
 }
 
@@ -149,23 +238,26 @@ class Runner {
 
   context: CanvasRenderingContext2D;
 
-  points: Point[] = [];
+  objects: CanvasObject[] = [];
 
   color: string;
 
+  backgroundColor: string;
+
   isMobile: boolean;
 
-  constructor(color: string, canvas: HTMLCanvasElement, isMobile: boolean) {
+  constructor(color: string, backgroundColor: string, canvas: HTMLCanvasElement, isMobile: boolean) {
     this.canvas = canvas;
     this.context = canvas.getContext('2d') as CanvasRenderingContext2D;
     this.color = color;
+    this.backgroundColor = backgroundColor;
     this.isMobile = isMobile;
   }
 
   restart(): void {
     [this.width, this.height] = [this.canvas.width, this.canvas.height];
 
-    this.points = [];
+    this.objects = [];
     for (let i = 0; i < PARAMS.nLines; i++) {
       const firstHalf = i < PARAMS.nLines / 2;
 
@@ -178,22 +270,24 @@ class Runner {
       const life = getLife(i, this.width, this.isMobile);
       const halfLife = getHalfLife(this.width, this.isMobile);
 
-      this.points.push(new Point(x, y, theta, alpha, this.color, type, life, halfLife));
+      this.objects.push(new Point(x, y, theta, alpha, this.color, type, life, halfLife));
     }
+
+    this.objects.push(new CornerCircle(this.width, 0, this.width * PARAMS.cornerCircle.radius, PARAMS.cornerCircle.width, this.color, this.backgroundColor, PARAMS.cornerCircle.holesNumber, PARAMS.cornerCircle.holeGap));
   }
 
   draw(): void {
     // Move each point
-    this.points.forEach((point) => {
-      point.move();
+    this.objects.forEach((object) => {
+      object.move();
     });
 
-    // Remove dead points
-    this.points = this.points.filter((point) => point.state !== State.DEAD);
+    // Remove dead objects
+    this.objects = this.objects.filter((object) => object.state !== State.DEAD);
 
     // Draw each point
-    this.points.forEach((point) => {
-      point.draw(this.context);
+    this.objects.forEach((object) => {
+      object.draw(this.context);
     });
   }
 }

@@ -26,6 +26,7 @@ export default class Header extends Vue {
       this.canvas = document.getElementById('background') as HTMLCanvasElement;
       this.runner = new Runner(
           this.$vuetify.theme.themes.light.secondary?.toString() || '#ffffff',
+          this.$vuetify.theme.themes.light.primary?.toString() || '#ffffff',
           this.canvas,
           this.$device.mobile as boolean,
       );
