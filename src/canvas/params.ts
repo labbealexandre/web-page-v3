@@ -7,7 +7,6 @@ export type PointParams = {
   deltaY: number,
   nLines: number,
   angle: number,
-  mobileFactor: number
 }
 
 export type CornerCircleParams = {

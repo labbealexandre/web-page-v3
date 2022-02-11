@@ -8,30 +8,39 @@
 
 import CanvasObject from './canvas/canvas-object';
 import CornerCircle from './canvas/corner-circle';
-import { Params } from './canvas/params';
+import { CornerCircleParams, Params, PointParams } from './canvas/params';
 import Point from './canvas/point';
 import { State } from './canvas/types';
 
-function getParams(width: number, height: number): Params {
+function getPointParams(width: number, height: number, isMobile: boolean) : PointParams {
+  const sizeFactor = (isMobile ? 1.5 : 1);
+
   return {
-    point: {
-      radius: 5,
-      lifeMin: width / 12,
-      lifeMax: width / 3,
-      halfLife: width / 16,
-      offsetY: height / 12,
-      deltaY: height / 16,
-      nLines: 8,
-      angle: 30,
-      mobileFactor: 2,
-    },
-    cornerCircle: {
-      radius: width / 8,
-      width: 16,
-      holesNumber: 6,
-      holeGap: Math.PI / 16,
-      angleStep: Math.PI / 600,
-    },
+    radius: isMobile ? 3 : 6,
+    lifeMin: (width / 12) * sizeFactor,
+    lifeMax: (width / 3) * sizeFactor,
+    halfLife: (width / 16) * sizeFactor,
+    offsetY: height / 12,
+    deltaY: height / 16,
+    nLines: 8,
+    angle: 30,
+  };
+}
+
+function getCornerCircleParams(width: number, height: number, isMobile: boolean): CornerCircleParams {
+  return {
+    radius: width / (isMobile ? 4 : 8),
+    width: isMobile ? 8 : 16,
+    holesNumber: 6,
+    holeGap: Math.PI / 16,
+    angleStep: Math.PI / 600,
+  };
+}
+
+function getParams(width: number, height: number, isMobile: boolean): Params {
+  return {
+    point: getPointParams(width, height, isMobile),
+    cornerCircle: getCornerCircleParams(width, height, isMobile),
   };
 }
 
@@ -63,14 +72,15 @@ class Runner {
   restart(): void {
     [this.width, this.height] = [this.canvas.width, this.canvas.height];
 
-    const params = getParams(this.width, this.height);
+    const params = getParams(this.width, this.height, this.isMobile);
 
     this.objects = [];
     for (let i = 0; i < params.point.nLines; i++) {
-      this.objects.push(new Point(this.color, i, this.width, this.height, params.point, this.isMobile));
+      this.objects.push(new Point(this.color, i, this.width, this.height, params.point));
     }
 
     this.objects.push(new CornerCircle(this.width, 0, this.color, this.backgroundColor, params.cornerCircle));
+    this.objects.push(new CornerCircle(0, this.height, this.color, this.backgroundColor, params.cornerCircle));
   }
 
   draw(): void {

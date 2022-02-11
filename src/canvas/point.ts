@@ -44,25 +44,15 @@ function getAlpha(index: number, params: PointParams): number {
   return alpha;
 }
 
-function getLife(index: number, isMobile: boolean, params: PointParams): number {
+function getLife(index: number, params: PointParams): number {
   const t = ((index % 2) ^ (Math.floor(index / 2) % 2));
 
   const lifeMin = params.lifeMin + ((params.lifeMax - params.lifeMin) / 2) * t;
   const lifeMax = params.lifeMin + ((params.lifeMax - params.lifeMin) / 2) * (1 + t);
 
-  let life = getRandomInt(lifeMin, lifeMax);
-  if (isMobile) {
-    life *= params.mobileFactor;
-  }
-  return life;
-}
+  const life = getRandomInt(lifeMin, lifeMax);
 
-function getHalfLife(isMobile: boolean, params: PointParams): number {
-  let { halfLife } = params;
-  if (isMobile) {
-    halfLife *= params.mobileFactor;
-  }
-  return halfLife;
+  return life;
 }
 
 function getType(): Type {
@@ -78,8 +68,6 @@ class Point extends CanvasObject {
 
     life: number;
 
-    halfLife: number;
-
     theta: number;
 
     alpha: number;
@@ -92,7 +80,7 @@ class Point extends CanvasObject {
 
     params: PointParams;
 
-    constructor(color: string, index: number, width :number, height: number, params: PointParams, isMobile: boolean) {
+    constructor(color: string, index: number, width :number, height: number, params: PointParams) {
       super();
       this.params = params;
 
@@ -102,8 +90,7 @@ class Point extends CanvasObject {
       this.y = getPointY(index, height, firstHalf, params);
       this.theta = getTheta(firstHalf);
       this.alpha = getAlpha(index, params);
-      this.life = getLife(index, isMobile, params);
-      this.halfLife = getHalfLife(isMobile, params);
+      this.life = getLife(index, params);
       this.type = getType();
       this.radius = this.params.radius;
       this.hasTurned = false;
@@ -119,7 +106,7 @@ class Point extends CanvasObject {
       this.life -= 1;
       switch (this.state) {
         case State.GROW:
-          if (!this.hasTurned && this.life <= this.halfLife) {
+          if (!this.hasTurned && this.life <= this.params.halfLife) {
             this.theta += this.alpha;
             this.hasTurned = true;
           }
