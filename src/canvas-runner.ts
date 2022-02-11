@@ -8,6 +8,7 @@
 
 import CanvasObject from './canvas/canvas-object';
 import CornerCircle from './canvas/corner-circle';
+import Link from './canvas/links';
 import { CornerCircleParams, Params, PointParams } from './canvas/params';
 import Point from './canvas/point';
 import { State } from './canvas/types';
@@ -37,10 +38,20 @@ function getCornerCircleParams(width: number, height: number, isMobile: boolean)
   };
 }
 
+function getLinkParams(width: number, height: number, isMobile: boolean) {
+  return {
+    nLinks: 3,
+    radius: 70,
+    width: isMobile ? 6 : 12,
+    distance: width / 5,
+  };
+}
+
 function getParams(width: number, height: number, isMobile: boolean): Params {
   return {
     point: getPointParams(width, height, isMobile),
     cornerCircle: getCornerCircleParams(width, height, isMobile),
+    link: getLinkParams(width, height, isMobile),
   };
 }
 
@@ -61,12 +72,15 @@ class Runner {
 
   isMobile: boolean;
 
+  iconsPositions: [number, number][];
+
   constructor(color: string, backgroundColor: string, canvas: HTMLCanvasElement, isMobile: boolean) {
     this.canvas = canvas;
     this.context = canvas.getContext('2d') as CanvasRenderingContext2D;
     this.color = color;
     this.backgroundColor = backgroundColor;
     this.isMobile = isMobile;
+    this.iconsPositions = [];
   }
 
   restart(): void {
@@ -75,8 +89,19 @@ class Runner {
     const params = getParams(this.width, this.height, this.isMobile);
 
     this.objects = [];
+    this.iconsPositions = [];
+
     for (let i = 0; i < params.point.nLines; i++) {
       this.objects.push(new Point(this.color, i, this.width, this.height, params.point));
+    }
+
+    if (this.width > 1300) {
+      for (let i = 0; i < params.link.nLinks; i++) {
+        const link = new Link(this.color, i, this.width, 0, params.link);
+        this.iconsPositions.push([link.x2, link.y2]);
+
+        this.objects.push(link);
+      }
     }
 
     this.objects.push(new CornerCircle(this.width, 0, this.color, this.backgroundColor, params.cornerCircle));

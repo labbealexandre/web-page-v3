@@ -8,19 +8,67 @@
             <h1 class="secondary--text text-md-h3 text-h4 header-title">
                 IT Security Consultant
             </h1>
+            <div
+              v-for="link in contactLinks.filter(link => link.unset === false)"
+              :key="link.id"
+              class="canvas-icon"
+              :style="{'left': `${link.x}px`, 'top': `${link.y}px`}"
+            >
+              <a :href="link.url" class="text-decoration-none">
+                <v-icon
+                  dark
+                  size="60"
+                  color="secondary"
+                >
+                  {{ link.logo }}
+                </v-icon>
+              </a>
+            </div>
         </div>
     </div>
 </template>
 
 <script lang="ts">
+import { ContactLink } from '@/types';
 import { Component, Vue } from 'vue-property-decorator';
 import Runner from '../canvas-runner';
+
+function getLinks(): ContactLink[] {
+  return [
+    {
+      id: 'github',
+      x: 0,
+      y: 0,
+      logo: 'mdi-github',
+      unset: true,
+      url: 'https://github.com/labbealexandre',
+    },
+    {
+      id: 'linkedin',
+      x: 0,
+      y: 0,
+      logo: 'mdi-linkedin',
+      unset: true,
+      url: 'https://www.linkedin.com/in/alex-labbe/',
+    },
+    {
+      id: 'reddit',
+      x: 0,
+      y: 0,
+      logo: 'mdi-reddit',
+      unset: true,
+      url: '',
+    },
+  ];
+}
 
 @Component({})
 export default class Header extends Vue {
     canvas?: HTMLCanvasElement
 
     runner?: Runner
+
+    contactLinks = getLinks()
 
     mounted(): void {
       this.canvas = document.getElementById('background') as HTMLCanvasElement;
@@ -41,6 +89,20 @@ export default class Header extends Vue {
       }, 8);
     }
 
+    setContactLinks(): void {
+      this.contactLinks = (this.runner?.iconsPositions || []).map(([x, y], index) => {
+        const { id, logo, url } = getLinks()[index];
+        return {
+          id,
+          x: Math.round(x),
+          y: Math.round(y),
+          logo,
+          unset: false,
+          url,
+        };
+      });
+    }
+
     resizeCanvas(): void {
       if (!this.canvas || !this.runner) {
         return;
@@ -52,6 +114,7 @@ export default class Header extends Vue {
         this.canvas.width = window.innerWidth;
         this.canvas.height = window.innerHeight;
         this.runner.restart();
+        this.setContactLinks();
       }, 200);
     }
 }
@@ -87,6 +150,11 @@ export default class Header extends Vue {
 
 .header-title {
     animation: fadeIn linear 2s;
+}
+
+.canvas-icon {
+  position: absolute;
+  transform: translate(-50%, -50%);
 }
 
 </style>

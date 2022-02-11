@@ -6,3 +6,12 @@ export type Project = {
     image?: string,
     url?: string
 }
+
+export type ContactLink = {
+    id: string,
+    x: number,
+    y: number,
+    logo: string,
+    unset: boolean,
+    url: string
+}

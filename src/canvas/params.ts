@@ -17,7 +17,15 @@ export type CornerCircleParams = {
   angleStep: number
 }
 
+export type LinkParams = {
+  nLinks: number,
+  radius: number,
+  width: number,
+  distance: number
+}
+
 export type Params = {
   point: PointParams,
-  cornerCircle: CornerCircleParams
+  cornerCircle: CornerCircleParams,
+  link: LinkParams
 }

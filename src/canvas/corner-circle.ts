@@ -39,10 +39,13 @@ class CornerCircle extends CanvasObject {
 
       ctx.beginPath();
 
+      const outterRadius = this.params.radius + 3 * this.params.width;
+
       ctx.fillStyle = this.backgroundColor;
-      ctx.strokeStyle = this.backgroundColor;
-      ctx.arc(this.x, this.y, this.params.radius + this.params.width, 0, 2 * Math.PI);
+      ctx.strokeStyle = this.color;
+      ctx.arc(this.x, this.y, outterRadius, 0, 2 * Math.PI);
       ctx.fill();
+      ctx.stroke();
 
       ctx.strokeStyle = this.color;
       for (let i = 0; i < this.params.holesNumber; i++) {
