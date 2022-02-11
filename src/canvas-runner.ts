@@ -7,15 +7,17 @@
 /* eslint-disable max-classes-per-file */
 
 const PARAMS = {
-  radius: 5,
-  lifeMin: 1 / 12,
-  lifeMax: 1 / 3,
-  halfLife: 1 / 16,
-  offsetY: 1 / 12,
-  deltaY: 1 / 16,
-  nLines: 8,
-  angle: 30,
-  mobileFactor: 2,
+  point: {
+    radius: 5,
+    lifeMin: 1 / 12,
+    lifeMax: 1 / 3,
+    halfLife: 1 / 16,
+    offsetY: 1 / 12,
+    deltaY: 1 / 16,
+    nLines: 8,
+    angle: 30,
+    mobileFactor: 2,
+  },
   cornerCircle: {
     radius: 1 / 8,
     width: 10,
@@ -42,26 +44,26 @@ function getRandomInt(xMin: number, xMax: number): number {
 
 function getAngle(index: number): number {
   const t = (Math.floor(index / 2) % 2) * 2 - 1;
-  return (Math.PI * t * PARAMS.angle) / 180;
+  return (Math.PI * t * PARAMS.point.angle) / 180;
 }
 
 function getLife(index: number, width: number, isMobile: boolean): number {
   const t = ((index % 2) ^ (Math.floor(index / 2) % 2));
 
-  const lifeMin = PARAMS.lifeMin + ((PARAMS.lifeMax - PARAMS.lifeMin) / 2) * t;
-  const lifeMax = PARAMS.lifeMin + ((PARAMS.lifeMax - PARAMS.lifeMin) / 2) * (1 + t);
+  const lifeMin = PARAMS.point.lifeMin + ((PARAMS.point.lifeMax - PARAMS.point.lifeMin) / 2) * t;
+  const lifeMax = PARAMS.point.lifeMin + ((PARAMS.point.lifeMax - PARAMS.point.lifeMin) / 2) * (1 + t);
 
   let life = getRandomInt(width * lifeMin, width * lifeMax);
   if (isMobile) {
-    life *= PARAMS.mobileFactor;
+    life *= PARAMS.point.mobileFactor;
   }
   return life;
 }
 
 function getHalfLife(width: number, isMobile: boolean): number {
-  let halfLife = width * PARAMS.halfLife;
+  let halfLife = width * PARAMS.point.halfLife;
   if (isMobile) {
-    halfLife *= PARAMS.mobileFactor;
+    halfLife *= PARAMS.point.mobileFactor;
   }
   return halfLife;
 }
@@ -110,7 +112,7 @@ class Point extends CanvasObject {
     this.y = y;
     this.theta = theta;
     this.alpha = alpha;
-    this.radius = PARAMS.radius;
+    this.radius = PARAMS.point.radius;
     this.color = color;
     this.life = life;
     this.halfLife = halfLife;
@@ -258,13 +260,13 @@ class Runner {
     [this.width, this.height] = [this.canvas.width, this.canvas.height];
 
     this.objects = [];
-    for (let i = 0; i < PARAMS.nLines; i++) {
-      const firstHalf = i < PARAMS.nLines / 2;
+    for (let i = 0; i < PARAMS.point.nLines; i++) {
+      const firstHalf = i < PARAMS.point.nLines / 2;
 
-      const offset = firstHalf ? PARAMS.offsetY : 1 - PARAMS.offsetY;
+      const offset = firstHalf ? PARAMS.point.offsetY : 1 - PARAMS.point.offsetY;
       const theta = Math.PI * (firstHalf ? 0 : -1);
       const x = firstHalf ? 0 : this.width;
-      const y = (offset + (i % (PARAMS.nLines / 2)) * PARAMS.deltaY * (firstHalf ? 1 : -1)) * this.height;
+      const y = (offset + (i % (PARAMS.point.nLines / 2)) * PARAMS.point.deltaY * (firstHalf ? 1 : -1)) * this.height;
       const type = getRandomInt(0, 2);
       const alpha = getAngle(i);
       const life = getLife(i, this.width, this.isMobile);
