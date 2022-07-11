@@ -1,8 +1,8 @@
 <template>
-    <div>
-        <Header />
-        <Board />
-    </div>
+  <div>
+    <Header />
+    <!-- <Board /> -->
+  </div>
 </template>
 
 <script lang="ts">
@@ -16,6 +16,6 @@ import Board from './Board.vue';
     Board,
   },
 })
-export default class Home extends Vue {}
+export default class Home extends Vue { }
 
 </script>
